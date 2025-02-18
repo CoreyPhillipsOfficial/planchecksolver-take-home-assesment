@@ -30,9 +30,11 @@ export default function Home() {
       if (data.completed + data.failed === data.total) {
         setTimeout(() => setProcessing(false), 2000);
       }
-    }
+    };
 
-  })
+    return () => ws.close();
+
+  }, [processing]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
