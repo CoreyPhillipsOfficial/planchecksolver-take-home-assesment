@@ -12,6 +12,12 @@ export default function Home() {
     individual: Record<string, string>;
   }>({ total: 0, completed: 0, failed: 0, individual: {} });
 
+  // Web socket connection
+  useEffect(() => {
+    if (!processing) return;
+    const ws = new Websocket('ws://localhost:800/ws')
+  })
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
       <main className="text-center">
