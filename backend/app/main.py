@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request, Response
+from fastapi import FastAPI, BackgroundTasks, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 import random
@@ -48,8 +48,16 @@ async def process_task(task_id: str):
     except Exception as e:
         task_states[task_id] = f"failed: {str(e)}"
     finally:
-        # Cleanup logic if needed
+        # Can clean this up a bit
         pass
+
+    app.post("/start")
+    async def start_process(background_tasks: BackgroundTasks):
+        "Endpoint to trigger processing of all tasks"
+        for task_id in task_states:
+            background_tasks.add_task(process_task, task_id)
+        return {"message": "50 tasks started"}
+
 
 if __name__ == "__main__":
     import uvicorn
