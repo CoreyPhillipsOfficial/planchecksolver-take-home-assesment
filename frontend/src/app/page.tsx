@@ -1,7 +1,11 @@
-
 "use client";
 
 import { useState, useEffect } from "react";
+
+type TaskStatus = {
+  status: string;
+  error?: string;
+};
 
 export default function Home() {
   const [processing, setProcessing] = useState(false);
@@ -9,7 +13,7 @@ export default function Home() {
     total: number;
     completed: number;
     failed: number;
-    individual: Record<string, string>;
+    individual: Record<string, TaskStatus>;
   }>({ total: 0, completed: 0, failed: 0, individual: {} });
 
   // Web socket connection
