@@ -32,11 +32,6 @@ app.add_middleware(
 #     return Response("ok", status_code=200)
 
 
-# if __name__ == "__main__":
-#     import uvicorn
-#     uvicorn.run(app, host="0.0.0.0", port=8000)
-
-
 async def process_task(task_id: str):
     "Simulate long-running task with random failure chance"
     try:
@@ -57,7 +52,7 @@ async def process_task(task_id: str):
         # Can clean this up a bit
         pass
 
-app.post("/start")
+@app.post("/start")
 async def start_process(background_tasks: BackgroundTasks):
     "Endpoint to trigger processing of all tasks"
     for task_id in task_states:
@@ -84,3 +79,7 @@ async def websocket_endpoint(websocket: WebSocket):
         print(f"WebSocket error: {str(e)}")
     finally:
         await websocket.close()
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
