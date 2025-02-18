@@ -24,12 +24,32 @@ app.add_middleware(
     allow_methods=["*"],
 )
 
-@app.get("/process")
-async def process(request: Request):
-    sleep_time = random.randint(30, 120)
-    await asyncio.sleep(sleep_time)
+# @app.get("/process")
+# async def process(request: Request):
+#     sleep_time = random.randint(30, 120)
+#     await asyncio.sleep(sleep_time)
     
-    return Response("ok", status_code=200)
+#     return Response("ok", status_code=200)
+
+async def process_task(task_id: str):
+    "Simulate long-running task with random failure chance"
+    try:
+        # Adjust the vlues for testing vs final version
+        delay = random.randint(5, 10) if __debug__ else random.randint(30, 120)
+        # 20% chance of failure
+        failure_chance = 0.2
+
+        await asyncio.sleep(delay)
+
+        if random.random() < failure_chance:
+            raise RuntimeError(f"Simulated failure for task {task_id}")
+        
+        task_states[task_id] = "completed"
+    except Exception as e:
+        task_states[task_id] = f"failed: {str(e)}"
+    finally:
+        # Cleanup logic if needed
+        pass
 
 if __name__ == "__main__":
     import uvicorn
