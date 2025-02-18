@@ -1,4 +1,4 @@
-from fastapi import FastAPI, BackgroundTasks, Request, Response
+from fastapi import FastAPI, BackgroundTasks, WebSocket, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 import random
@@ -31,6 +31,12 @@ app.add_middleware(
     
 #     return Response("ok", status_code=200)
 
+
+# if __name__ == "__main__":
+#     import uvicorn
+#     uvicorn.run(app, host="0.0.0.0", port=8000)
+
+
 async def process_task(task_id: str):
     "Simulate long-running task with random failure chance"
     try:
@@ -58,7 +64,23 @@ async def process_task(task_id: str):
             background_tasks.add_task(process_task, task_id)
         return {"message": "50 tasks started"}
 
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+@app.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    """WebSocket connection for real-time updates"""
+    await websocket.accept()
+    try:
+        while True:
+            # Aggregate statuses
+            status = {
+                "total": len(task_states),
+                "completed": sum(1 for s in task_states.values() if "completed" in s),
+                "failed": sum(1 for s in task_states.values() if "failed" in s),
+                "individual": task_states
+            }
+            await websocket.send_json(status)
+            await asyncio.sleep(0.5)  # Update interval
+            
+    except Exception as e:
+        print(f"WebSocket error: {str(e)}")
+    finally:
+        await websocket.close()
