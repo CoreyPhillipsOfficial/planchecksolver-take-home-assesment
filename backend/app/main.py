@@ -69,17 +69,19 @@ async def websocket_endpoint(websocket: WebSocket):
             # Aggregate statuses
             status = {
                 "total": len(task_states),
-                "completed": sum(1 for s in task_states.values() if "completed" in s),
-                "failed": sum(1 for s in task_states.values() if "failed" in s),
+                "completed": sum(1 for s in task_states.values() if s.get('status') == "completed"),
+                "failed": sum(1 for s in task_states.values() if s.get('status') == "failed"),
                 "individual": task_states
             }
             await websocket.send_json(status)
             await asyncio.sleep(0.5)  # Update interval
             
+    except WebSocketDisconnect:
+        print("WebSocket disconnected")
     except Exception as e:
         print(f"WebSocket error: {str(e)}")
     finally:
-        await websocket.close()
+        pass
 
 if __name__ == "__main__":
     import uvicorn
