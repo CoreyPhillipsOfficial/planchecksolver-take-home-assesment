@@ -57,16 +57,16 @@ async def process_task(task_id: str):
         # Can clean this up a bit
         pass
 
-    app.post("/start")
-    async def start_process(background_tasks: BackgroundTasks):
-        "Endpoint to trigger processing of all tasks"
-        for task_id in task_states:
-            background_tasks.add_task(process_task, task_id)
-        return {"message": "50 tasks started"}
+app.post("/start")
+async def start_process(background_tasks: BackgroundTasks):
+    "Endpoint to trigger processing of all tasks"
+    for task_id in task_states:
+        background_tasks.add_task(process_task, task_id)
+    return {"message": "50 tasks started"}
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
-    """WebSocket connection for real-time updates"""
+    "WebSocket connection for real-time updates"
     await websocket.accept()
     try:
         while True:
