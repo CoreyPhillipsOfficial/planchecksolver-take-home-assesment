@@ -1,8 +1,20 @@
 from fastapi import FastAPI, Request, Response
+from contextlib import asynccontextmanager
 import random
 import asyncio
 
-app = FastAPI()
+# Global state management
+task_states: Dict[str, str] = {}
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Initialize all tasks as pending
+    global task_states
+    task_states = {str(i): {"status": "pending"} for i in range(50)}
+    yield
+    task_states.clear()
+
+app = FastAPI(lifespan=lifespan)
 
 @app.get("/process")
 async def process(request: Request):
