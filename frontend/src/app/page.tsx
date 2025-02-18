@@ -15,7 +15,23 @@ export default function Home() {
   // Web socket connection
   useEffect(() => {
     if (!processing) return;
-    const ws = new Websocket('ws://localhost:800/ws')
+    const ws = new WebSocket('ws://localhost:800/ws');
+
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      setStatus({
+        total: data.total,
+        completed: data.completed,
+        failed: data.failed,
+        individual: data.individual
+      });
+
+      // Auto-complete handling
+      if (data.completed + data.failed === data.total) {
+        setTimeout(() => setProcessing(false), 2000);
+      }
+    }
+
   })
 
   return (
