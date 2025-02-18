@@ -45,9 +45,10 @@ async def process_task(task_id: str):
         if random.random() < failure_chance:
             raise RuntimeError(f"Simulated failure for task {task_id}")
         
-        task_states[task_id] = "completed"
+        task_states[task_id]['status'] = "completed"
     except Exception as e:
-        task_states[task_id] = f"failed: {str(e)}"
+        task_states[task_id]['status'] = "failed"
+        task_states[task_id]['error'] = str(e)
     finally:
         # Can clean this up a bit
         pass
