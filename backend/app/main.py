@@ -25,9 +25,8 @@ app.add_middleware(
 )
 
 async def process_task(task_id: str):
-    "Simulate long-running task with random failure chance and incremental progress updates"
+    "Simulate long-running task with incremental progress updates"
     try:
-        # Adjust the vlues for testing vs final version
         # Total duration for the task
         total_delay = random.randint(5, 10) if __debug__ else random.randint(30, 120)
         failure_chance = 0.2

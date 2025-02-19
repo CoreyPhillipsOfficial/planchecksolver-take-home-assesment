@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 
 type TaskStatus = {
   status: string;
+  progress: number;
   error?: string;
 };
 
