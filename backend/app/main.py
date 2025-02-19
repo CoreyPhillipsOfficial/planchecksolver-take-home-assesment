@@ -32,7 +32,7 @@ async def process_task(task_id: str):
         failure_chance = 0.2
 
         # Number of progress updates
-        steps = 10
+        steps = 100
         step_delay = total_delay / steps
 
         for i in range(steps):
