@@ -1,46 +1,120 @@
-# Take Home Assessment - Full Stack Engineer
+# Task Processing Simulator
 
-## Task
-Modify the starter project in the repository to implement a user-friendly and creative solution for tracking and displaying the progress of a long-running backend process. The goal is to provide feedback as tasks are completed or fail. You are free to design the solution using a progress bar or any alternative you find effective.
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-## System Overview
-- The front end will trigger 50 simultaneous requests to the backend, simulating a long-running process
-- The backend will sleep for 30 seconds to 2 minutes (random for each individual request) per request to simulate processing (you can adjust this for testing purposes)
-- Both the backend and frontend code are fully customizable. Feel free to modify the architecture and design, provided the core requirements are met
+A full-stack application demonstrating real-time progress tracking for concurrent tasks, built with FastAPI and Next.js. Designed for a full-stack software engineer role assessment.
 
-## Requirements
+![Task Processing Demo](./demo-screenshot.png)
 
-### 1. Progress Tracking
-- Implement a mechanism to track the progress of the process as the 50 backend tasks complete or fail
-- The user should be kept informed with clear and intuitive updates
-- You are encouraged to explore creative solutions and are not limited to traditional progress bars
+## Features
 
-### 2. Resilience and Fault Tolerance
-- The system should handle temporary issues (e.g., network delays, partial task failures) gracefully, without requiring user intervention
-- The process should not break if some tasks encounter errors or delays
+### Progress Tracking & User Feedback
+- 🕒 Real-time updates via WebSocket connections
+- 📊 Two-level progress visualization:
+  - **Global Progress Bar**: Overall completion percentage
+  - **Task Grid**: 50 individual task indicators with color-coded statuses
+- 🎯 Completion states clarity:
+  - ✅ Completed (Green)
+  - ❌ Failed (Red)
+  - ⏳ In-progress (Gray + percentage)
 
-### 3. User Feedback and Completion
-- Provide meaningful feedback once the process completes, including successes, failures, or any relevant status summaries
+### Resilience & Fault Tolerance
+- 🛡 20% simulated failure rate for robustness testing
+- 🔄 Automatic WebSocket reconnection handling
+- 💪 Graceful error handling at both backend and frontend layers
+- 🔄 Process restart capability without manual intervention
 
-### 4. Things to Not Be Caught Up On
-- Don't worry about authentication or authorization
-- Don't worry about the UI design, just use a UI library (It should look uniform)
+### Technical Implementation
+- ⚡ FastAPI backend with ASGI server (uvicorn)
+- 🚀 Next.js 13 frontend with App Router
+- 🎨 Tailwind CSS for modern, responsive styling
+- 🔄 Bi-directional WebSocket communication
 
-## Scoring Criteria
+## System Architecture
 
-### 1. User Experience (UX)
-- A smooth and intuitive user interface that effectively communicates progress
+### Backend (FastAPI)
+- 🐍 Python
+# Key Features:
+- REST endpoints: /start, /reset
+- WebSocket endpoint: /ws
+- Global state management for task statuses
+- Randomized task durations (30-120s simulation)
+- Background task processing
+Frontend (Next.js)
+typescript
 
-### 2. Code Quality
-- Clean, maintainable, and modular code
-- Proper use of reusable components and separation of concerns
-- Effective error handling and adherence to best practices
 
-### 3. Robustness
-- The system should handle errors, network issues, and other temporary problems without breaking the process
-- Ensure the system gracefully reflects the process status, even if some tasks fail
+### Key Features:
+- WebSocket integration with auto-reconnect
+- State management for process status
+- Responsive grid layout (5-10 columns based on viewport)
+- Interactive UI components with hover states
+- Error boundary handling
+Getting Started
+Prerequisites
+Node.js 18+ & npm
+Python 3.10+
+Modern web browser
+Installation
+Backend Setup
+bash
 
 
-## Submission
-- Please submit your solution as a fork of this repository.
-- Include a README.md file with your thoughts and any additional notes.
+cd backend
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+venv\Scripts\activate     # Windows
+pip install -r requirements.txt
+Frontend Setup
+bash
+
+
+cd frontend
+npm install
+Running the Application
+Start Backend
+bash
+
+
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
+Start Frontend
+bash
+
+
+npm run dev
+Access the application at http://localhost:3000
+Usage Workflow
+Click "Start Process" to initiate 50 concurrent tasks
+Observe real-time updates in:
+Global progress bar (top)
+Color-coded task grid
+Completed/Failed counters
+After completion:
+Button changes to "Completed! Start over?"
+Click to reset and restart the process
+Technical Highlights
+Backend Resilience
+Automatic State Initialization: Async lifespan management
+Concurrent Processing: Background tasks with error isolation
+WebSocket Optimization: 500ms update intervals
+CORS Configuration: Secure cross-origin policies
+Frontend UX
+State Management:
+typescript
+
+
+const [processState, setProcessState] = useState<'idle' | 'processing' | 'completed'>('idle');
+const [status, setStatus] = useState<{/*...*/}>(initialState);
+Responsive Design:
+Mobile-first grid layout
+Smooth animations for state transitions
+Accessibility:
+Semantic HTML elements
+Color contrast ratios for visibility
+Title attributes for task details
+License
+This project is licensed under the MIT License - see LICENSE for details.
+Developer Contact
+[Your Name]
+[Your Email]
+[LinkedIn Profile]
