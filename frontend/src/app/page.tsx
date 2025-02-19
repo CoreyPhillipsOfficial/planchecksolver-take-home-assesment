@@ -123,7 +123,7 @@ export default function Home() {
                       ? 'bg-red-400 hover:bg-red-500'
                       : taskInfo.status === 'completed'
                         ? 'bg-green-400 hover:bg-green-500'
-                        : 'bg-gray-300 hover:bg-gray-400'
+                        : 'bg-gray-400 hover:bg-gray-500'
                     }`
                   }
                   title={`Task ${taskId}: ${taskInfo.status}`}

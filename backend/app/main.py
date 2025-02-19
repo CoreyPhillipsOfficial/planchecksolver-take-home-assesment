@@ -28,7 +28,7 @@ async def process_task(task_id: str):
     "Simulate long-running task with incremental progress updates"
     try:
         # Total duration for the task
-        total_delay = random.randint(1, 2) if __debug__ else random.randint(30, 120)
+        total_delay = random.randint(30, 120) # Can adjust amount of time here
         failure_chance = 0.2
 
         # Number of progress updates
@@ -52,7 +52,7 @@ async def process_task(task_id: str):
         task_states[task_id]['status'] = "failed"
         task_states[task_id]['error'] = str(e)
     finally:
-        pass  # Optional cleanup
+        pass
 
 @app.post("/start")
 async def start_process(background_tasks: BackgroundTasks):
@@ -75,7 +75,7 @@ async def websocket_endpoint(websocket: WebSocket):
                 "individual": task_states  # Includes progress for each individual task
             }
             await websocket.send_json(status)
-            await asyncio.sleep(0.5)  # Update interval
+            await asyncio.sleep(0.5)
 
     except WebSocketDisconnect:
         print("WebSocket disconnected")
