@@ -1,4 +1,4 @@
-from fastapi import FastAPI, BackgroundTasks, WebSocket, Request, Response
+from fastapi import FastAPI, BackgroundTasks, WebSocket, WebSocketDisconnect, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 import random
@@ -73,17 +73,15 @@ async def websocket_endpoint(websocket: WebSocket):
                 "total": len(task_states),
                 "completed": sum(1 for s in task_states.values() if s.get('status') == "completed"),
                 "failed": sum(1 for s in task_states.values() if s.get('status') == "failed"),
-                "individual": task_states
+                "individual": task_states  # Now includes progress
             }
             await websocket.send_json(status)
             await asyncio.sleep(0.5)  # Update interval
-            
+
     except WebSocketDisconnect:
         print("WebSocket disconnected")
     except Exception as e:
         print(f"WebSocket error: {str(e)}")
-    finally:
-        pass
 
 if __name__ == "__main__":
     import uvicorn
