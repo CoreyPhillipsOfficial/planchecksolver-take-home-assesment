@@ -16,7 +16,7 @@ export default function Home() {
     individual: Record<string, TaskStatus>;
   }>({ total: 0, completed: 0, failed: 0, individual: {} });
 
-  // Web socket connection
+  // WebSocket connection
   useEffect(() => {
     if (!processing) return;
     const ws = new WebSocket('ws://localhost:8000/ws');
@@ -90,20 +90,20 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Task Grid [[3]] */}
+            {/* Task Grid */}
             <div className="grid grid-cols-5 md:grid-cols-10 gap-2 p-4 bg-gray-50 rounded-lg">
-              {Object.entries(status.individual).map(([taskId, status]) => (
+              {Object.entries(status.individual).map(([taskId, taskInfo]) => (
                 <div
                   key={taskId}
                   className={`aspect-square rounded-lg flex items-center justify-center text-xs
-                    ${status.includes('failed')
+        ${taskInfo.status.includes('failed')
                       ? 'bg-red-400 hover:bg-red-500'
-                      : status === 'completed'
+                      : taskInfo.status === 'completed'
                         ? 'bg-green-400 hover:bg-green-500'
                         : 'bg-gray-300 hover:bg-gray-400'
                     }`
                   }
-                  title={`Task ${taskId}: ${status}`}
+                  title={`Task ${taskId}: ${taskInfo.status}`}
                 />
               ))}
             </div>
