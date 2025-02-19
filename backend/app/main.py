@@ -10,9 +10,9 @@ task_states: Dict[str, str] = {}
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Initialize all tasks as pending
+    # Initialize all tasks as pending with 0% progress
     global task_states
-    task_states = {str(i): {"status": "pending"} for i in range(50)}
+    task_states = {str(i): {"status": "pending", "progress": 0} for i in range(50)}
     yield
     task_states.clear()
 
@@ -28,7 +28,7 @@ async def process_task(task_id: str):
     "Simulate long-running task with incremental progress updates"
     try:
         # Total duration for the task
-        total_delay = random.randint(5, 10) if __debug__ else random.randint(30, 120)
+        total_delay = random.randint(1, 2) if __debug__ else random.randint(30, 120)
         failure_chance = 0.2
 
         # Number of progress updates
@@ -72,7 +72,7 @@ async def websocket_endpoint(websocket: WebSocket):
                 "total": len(task_states),
                 "completed": sum(1 for s in task_states.values() if s.get('status') == "completed"),
                 "failed": sum(1 for s in task_states.values() if s.get('status') == "failed"),
-                "individual": task_states  # Now includes progress
+                "individual": task_states  # Includes progress for each individual task
             }
             await websocket.send_json(status)
             await asyncio.sleep(0.5)  # Update interval
@@ -81,6 +81,12 @@ async def websocket_endpoint(websocket: WebSocket):
         print("WebSocket disconnected")
     except Exception as e:
         print(f"WebSocket error: {str(e)}")
+
+@app.post("/reset")
+async def reset_tasks():
+    global task_states
+    task_states = {str(i): {"status": "pending", "progress": 0} for i in range(50)}
+    return {"message": "Tasks reset"}
 
 if __name__ == "__main__":
     import uvicorn
