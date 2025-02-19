@@ -96,7 +96,7 @@ export default function Home() {
               {Object.entries(status.individual).map(([taskId, taskInfo]) => (
                 <div
                   key={taskId}
-                  className={`aspect-square rounded-lg flex items-center justify-center text-xs
+                  className={`aspect-square rounded-lg flex flex-col items-center justify-center text-xs p-1
         ${taskInfo.status.includes('failed')
                       ? 'bg-red-400 hover:bg-red-500'
                       : taskInfo.status === 'completed'
@@ -105,7 +105,19 @@ export default function Home() {
                     }`
                   }
                   title={`Task ${taskId}: ${taskInfo.status}`}
-                />
+                >
+                  {/* Display task progress */}
+                  {taskInfo.status !== "completed" && taskInfo.status !== "failed" && (
+                    <div className="w-full h-2 bg-gray-200 rounded-full mt-1">
+                      <div
+                        className="h-full bg-blue-600 rounded-full"
+                        style={{ width: `${taskInfo.progress}%` }}
+                      />
+                    </div>
+                  )}
+                  {/* Optionally display status text */}
+                  <span>{taskInfo.progress}%</span>
+                </div>
               ))}
             </div>
           </div>
