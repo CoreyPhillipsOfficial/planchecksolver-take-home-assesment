@@ -24,34 +24,36 @@ app.add_middleware(
     allow_methods=["*"],
 )
 
-# @app.get("/process")
-# async def process(request: Request):
-#     sleep_time = random.randint(30, 120)
-#     await asyncio.sleep(sleep_time)
-    
-#     return Response("ok", status_code=200)
-
-
 async def process_task(task_id: str):
-    "Simulate long-running task with random failure chance"
+    "Simulate long-running task with random failure chance and incremental progress updates"
     try:
         # Adjust the vlues for testing vs final version
-        delay = random.randint(5, 10) if __debug__ else random.randint(30, 120)
-        # 20% chance of failure
+        # Total duration for the task
+        total_delay = random.randint(5, 10) if __debug__ else random.randint(30, 120)
         failure_chance = 0.2
 
-        await asyncio.sleep(delay)
+        # Number of progress updates
+        steps = 10
+        step_delay = total_delay / steps
 
+        for i in range(steps):
+            # Simulate work
+            await asyncio.sleep(step_delay)
+            # Update progress
+            task_states[task_id]['progress'] = int(((i + 1) / steps) * 100)
+            task_states[task_id]['status'] = "in_progress"
+
+        # After completing all steps, determine if the task fails or succeeds
         if random.random() < failure_chance:
             raise RuntimeError(f"Simulated failure for task {task_id}")
-        
+
         task_states[task_id]['status'] = "completed"
+
     except Exception as e:
         task_states[task_id]['status'] = "failed"
         task_states[task_id]['error'] = str(e)
     finally:
-        # Can clean this up a bit
-        pass
+        pass  # Optional cleanup
 
 @app.post("/start")
 async def start_process(background_tasks: BackgroundTasks):
